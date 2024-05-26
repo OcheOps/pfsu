@@ -1,9 +1,16 @@
-import { EntityRepository, Repository, SelectQueryBuilder } from 'typeorm';
-import { Room } from '../room/room.entity';
+import { Injectable } from '@nestjs/common';
+import { InjectRepository } from '@nestjs/typeorm';
+import { Repository } from 'typeorm';
+import { Room } from './room.entity';
 
-@EntityRepository(Room)
-export class RoomRepository extends Repository<Room> {
-  createQueryBuilder(): SelectQueryBuilder<Room> {
-    return super.createQueryBuilder();
+@Injectable()
+export class RoomRepository {
+  constructor(
+    @InjectRepository(Room)
+    private readonly roomRepository: Repository<Room>,
+  ) {}
+
+  createQueryBuilder(alias: string) {
+    return this.roomRepository.createQueryBuilder(alias);
   }
 }

@@ -20,17 +20,8 @@ export const applyFilters = <T>(
   }
 
   const allowedOperators = [
-    'equals',
-    'not',
-    'gt',
-    'gte',
-    'lt',
-    'lte',
-    'like',
-    'in',
-    'notIn',
-    'isNull',
-    'isNotNull',
+    'equals', 'not', 'gt', 'gte', 'lt', 'lte', 'like',
+    'in', 'notIn', 'isNull', 'isNotNull',
   ];
 
   const { alias, columns } = metadata;
@@ -102,20 +93,29 @@ export const applySorting = <T>(
   }
 
   const { alias, columns } = metadata;
+  const columnFields = columns.map((column) => column.field);
 
-  const sortQueries = sort.reduce((queries, sortItem) => {
+  const orderBy = sort.reduce((orderByObj, sortItem) => {
     const { field, order } = sortItem;
-    const column = columns.find((col) => col.field === field.field);
+    if (!columnFields.includes(field.field)) {
+      console.warn(`Field '${field.field}' not found in the entity metadata. Skipping sorting for this field.`);
+      return orderByObj;
+    }
 
+    const column = columns.find((col) => col.field === field.field);
     if (!column) {
-      throw new Error(`Field '${field.field}' not found in the entity metadata.`);
+      console.warn(`Field '${field.field}' not found in the entity metadata. Skipping sorting for this field.`);
+      return orderByObj;
     }
 
     const propertyPath = `${alias}.${column.propertyPath}`;
-    queries.push(`${propertyPath} ${order}`);
+    orderByObj[propertyPath] = order.toUpperCase() as 'ASC' | 'DESC';
+    return orderByObj;
+  }, {} as Record<string, 'ASC' | 'DESC'>);
 
-    return queries;
-  }, [] as string[]);
+  if (Object.keys(orderBy).length > 0) {
+    queryBuilder.orderBy(orderBy);
+  }
 
-  return queryBuilder.orderBy(sortQueries.join(', '));
+  return queryBuilder;
 };

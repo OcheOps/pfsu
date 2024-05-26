@@ -1,8 +1,9 @@
 import { Module } from '@nestjs/common';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { ConfigModule, ConfigService } from '@nestjs/config';
-import { Room } from './room/room.entity';
-
+import { RoomController } from './controller/room.controller';
+import { RoomService } from './service/room.service';
+import { RoomModule } from './room.module'; // Import the RoomModule
 
 @Module({
   imports: [
@@ -19,13 +20,16 @@ import { Room } from './room/room.entity';
         username: configService.get<string>('DB_USERNAME'),
         password: configService.get<string>('DB_PASSWORD'),
         database: configService.get<string>('DB_DATABASE'),
-        entities: [__dirname + '/room/room.entity{.ts,.js}'],
+        entities: [__dirname + '/**/*.entity{.ts,.js}'], // Adjust the entities path if needed
         migrations: [__dirname + '/migrations/*{.ts,.js}'],
         synchronize: true,
         logging: true,
       }),
       inject: [ConfigService],
     }),
+    RoomModule, // Import the RoomModule
   ],
+  controllers: [RoomController],
+  providers: [RoomService],
 })
 export class AppModule {}

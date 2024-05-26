@@ -10,9 +10,12 @@ export class RoomController {
   async findAll(
     @Query('page') page: number,
     @Query('limit') limit: number,
-    @Query('filters') filters: { field: string; value: any; operator: string }[],
-    @Query('sort') sort: { field: string; order: 'ASC' | 'DESC' }[],
+    @Query('filters') filters: string,
+    @Query('sort') sort: string,
   ): Promise<Room[]> {
-    return this.roomService.findAll(page, limit, filters, sort);
+    const parsedFilters = JSON.parse(filters || '[]');
+    const parsedSort = JSON.parse(sort || '[]');
+
+    return this.roomService.findAll(page, limit, parsedFilters, parsedSort);
   }
 }

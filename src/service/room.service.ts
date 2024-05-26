@@ -1,20 +1,16 @@
 import { Injectable } from '@nestjs/common';
-import { InjectRepository } from '@nestjs/typeorm';
 import { RoomRepository } from '../room/room.repository';
-import { Room } from '../room/room.entity';
 import {
   applyPagination,
   applyFilters,
   applySorting,
 } from '../utils/query-utils';
 import { Field, ObjectMetadata } from '../types/metadata.types';
+import { Room } from '../room/room.entity';
 
 @Injectable()
 export class RoomService {
-  constructor(
-    @InjectRepository(Room)
-    private readonly roomRepository: RoomRepository,
-  ) {}
+  constructor(private readonly roomRepository: RoomRepository) {}
 
   async findAll(
     page: number,
@@ -26,7 +22,7 @@ export class RoomService {
       field: str,
       propertyPath: str,
     });
-  
+
     const roomMetadata: ObjectMetadata = {
       alias: 'room',
       columns: [
@@ -36,13 +32,13 @@ export class RoomService {
         { field: 'userId', propertyPath: 'userId' },
       ],
     };
-  
-    let queryBuilder = this.roomRepository.createQueryBuilder();
-  
+
+    let queryBuilder = this.roomRepository.createQueryBuilder('room');
+
     queryBuilder = applyPagination(queryBuilder, page, limit);
     queryBuilder = applyFilters(queryBuilder, filters.map(filter => ({ ...filter, field: stringToField(filter.field) })), roomMetadata);
     queryBuilder = applySorting(queryBuilder, sort.map(sortItem => ({ ...sortItem, field: stringToField(sortItem.field) })), roomMetadata);
-  
+
     return queryBuilder.getMany();
   }
 }
