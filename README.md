@@ -71,3 +71,58 @@ Nest is an MIT-licensed open source project. It can grow thanks to the sponsors 
 ## License
 
 Nest is [MIT licensed](LICENSE).
+
+
+# Project: Query Utility for Pagination, Filtering, and Sorting
+
+This project is a utility module for a Nest.js TypeORM-based application that supports pagination, filtering, and sorting of database queries. This utility is reusable across different entities in an application.
+
+## Overview
+
+The utility module includes functions for applying pagination, filtering, and sorting to TypeORM query builders. A sample entity and repository are defined to demonstrate the utility functions. A base service is implemented that uses the utility module.
+
+## Implementation
+
+The utility module is implemented in TypeScript and includes the following functions:
+
+- `applyPagination(queryBuilder, page, limit)`: Applies pagination to the query builder.
+- `applyFilters(queryBuilder, filters)`: Applies filters to the query builder.
+- `applySorting(queryBuilder, sort)`: Applies sorting to the query builder.
+
+The utility functions are used in a base service that handles common CRUD operations. The service uses the utility functions to apply pagination, filtering, and sorting to the queries.
+
+## Usage
+
+To use the utility functions, import the utility module and call the functions with the appropriate parameters.
+
+For example, to apply pagination to a query:
+
+```typescript
+import { applyPagination } from './utility';
+
+// ...
+
+const queryBuilder = repository.createQueryBuilder();
+applyPagination(queryBuilder, page, limit);
+```
+
+## Testing
+
+The utility functions are tested with a series of GET requests to the `/api/rooms` endpoint. The tests verify that the utility functions correctly apply pagination, filtering, and sorting to the queries.
+
+## Deployment
+
+The server is deployed on Render and the database is Postgres.
+
+## Evaluation
+
+The project is evaluated based on the following criteria:
+
+- Code Quality: The code is clean, well-documented, and maintainable.
+- Functionality: The utility functions correctly implement pagination, filtering, and sorting.
+- Documentation: The documentation is clear and concise, explaining the utility functions and their usage.
+- Testing: The utility functions are adequately tested to ensure functionality and reliability.
+
+## Conclusion
+
+This project demonstrates how to create a utility module for a Nest.js TypeORM-based application that supports pagination, filtering, and sorting of database queries. The utility is reusable across different entities in an application, making it a versatile tool for any Nest.js TypeORM-based application.
